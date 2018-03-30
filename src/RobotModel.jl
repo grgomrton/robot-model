@@ -1,26 +1,24 @@
 # differential drive model
-cycle_time = 0.05   # sec
 L = 0.13    # m : distance between the wheels
 r = 0.033   # m : wheel radius
 
-function initial_state(x_world, y_world, theta_world, left_wheel_speed, right_wheel_speed)
-    return [x_world y_world theta_world left_wheel_speed right_wheel_speed]
+function initial_state(x_world, y_world, theta_world, speed_left_wheel, speed_right_wheel)
+    return [x_world y_world theta_world speed_left_wheel speed_right_wheel]
 end
 
-function calculate_dots(robotstate, control)
-    x, y, theta, left_speed, right_speed = robotstate
-    x_dot = r/2 * (left_speed + right_speed) * cos(theta)
-    y_dot = r/2 * (left_speed + right_speed) * sin(theta)
-    theta_dot = r/L * (right_speed - left_speed)
-    left_acceleration, right_acceleration = control
-    left_speed_dot = left_acceleration
-    right_speed_dot = right_acceleration
-    return [x_dot y_dot theta_dot left_speed_dot right_speed_dot]
+function velocities(robot_state, control)
+    x, y, theta, speed_left_wheel, speed_right_wheel = robot_state
+    dx = r/2 * (speed_left_wheel + speed_right_wheel) * cos(theta)
+    dy = r/2 * (speed_left_wheel + speed_right_wheel) * sin(theta)
+    dtheta = r/L * (speed_right_wheel - speed_left_wheel)
+
+    acceleration_left_wheel, acceleration_right_wheel = control
+    dspeed_left = acceleration_left_wheel
+    dspeed_right = acceleration_right_wheel
+
+    return [dx dy dtheta dspeed_left dspeed_right]
 end
 
-function next_state(robotstate, control)
-    dots = calculate_dots(robotstate, control)
-    return robotstate + cycle_time * dots
+function state_update(robot_state, control, elapsed_time)
+    return robot_state + elapsed_time * velocities(robot_state, control)
 end
-
-print(next_state(initial_state(0, 0, 0, 0, 0), [1 1]))
