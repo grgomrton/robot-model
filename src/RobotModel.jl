@@ -7,6 +7,10 @@ function initial_state(x_world, y_world, theta_world, v_left_wheel, v_right_whee
     return [x_world y_world theta_world v_left_wheel v_right_wheel]
 end
 
+function state_update(state, control, elapsed_time)
+    return state + elapsed_time * velocities(state, control)
+end
+
 function velocities(current_state, control)
     x, y, theta, v_left_wheel, v_right_wheel = current_state
     dx = r/2 * (v_left_wheel + v_right_wheel) * cos(theta)
@@ -18,8 +22,4 @@ function velocities(current_state, control)
     dv_right = a_right_wheel
 
     return [dx dy dtheta dv_left dv_right]
-end
-
-function state_update(state, control, elapsed_time)
-    return state + elapsed_time * velocities(state, control)
 end
