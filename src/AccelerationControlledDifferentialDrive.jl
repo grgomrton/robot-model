@@ -1,12 +1,18 @@
 L = 0.13    # m : distance between the wheels
 r = 0.033   # m : wheel radius
-motor_controller_cycle_time = 0.002 # sec : the time between two consecutive updates of the motor speed
+# this timing is nice and precise, it is questionable however
+# whether my cheap kit will follow this accuracy.
+# the pi's gpio can handle way higher frequencies than the one
+# required to emit this one, it will depend on the h-bridge and
+# on the motors' responsivenes. leave it as is for now.
+motor_controller_cycle_time = 0.0125 # sec : the time between two consecutive updates of the motor velocity
 
+# it is assumed that the motor controller can directly set
+# the motor angular velocity and the control takes effect
+# immediately
 function execute(control, state, fortime)
-    elapsed_time = 0
-    while (elapsed_time < fortime)
+    for cycle in motor_controller_cycle_time:motor_controller_cycle_time:fortime
         state = state + motor_controller_cycle_time * velocities(state, control)
-        elapsed_time += motor_controller_cycle_time
     end
     return state
 end
@@ -19,6 +25,7 @@ function state_update(state, control, elapsed_time)
     return execute(control, state, elapsed_time)
 end
 
+# state derivatives
 function velocities(current_state, control)
     x, y, theta, v_left_wheel, v_right_wheel = current_state
     dx = r/2 * (v_left_wheel + v_right_wheel) * cos(theta)
