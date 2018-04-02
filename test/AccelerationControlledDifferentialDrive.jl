@@ -1,5 +1,5 @@
 using Base.Test
-include("../src/AccelerationControlledDifferentialDrive.jl")
+include("../model/AccelerationControlledDifferentialDrive.jl")
 
 let state = initial_state(0.5, 1.2, π/4, 0.2, 0.4)
     ε = 0.0001

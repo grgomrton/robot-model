@@ -1,5 +1,5 @@
 using Base.Test
-include("../src/AccelerationControlledDifferentialDrive.jl")
+include("../model/AccelerationControlledDifferentialDrive.jl")
 
 let state_short_cycle = initial_state(0, 0, 0, 0, 0)
 	state_long_cycle = initial_state(0, 0, 0, 0, 0)

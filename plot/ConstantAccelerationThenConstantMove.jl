@@ -1,4 +1,4 @@
-include("../src/AccelerationControlledDifferentialDrive.jl")
+include("../model/AccelerationControlledDifferentialDrive.jl")
 using Plots
 plotlyjs()
 
@@ -28,7 +28,7 @@ let state = initial_state(0, 0, 0, 0, 0)
 
 	states = reshape(states, 5, 31)
 	plot(timepoints, view(states, 4, :), title="Angular velocity over time", xlabel="t [s]", ylabel="[rad/s]", label="v_joint", linewidth=2)
-	plot(timepoints, view(states, 4, :) * radius, title="Robot velocity over time", xlabel="t [s]", ylabel="[m/s]", label="v_robot", linewidth=2)
-	plot(timepoints, [view(states, 1, :), view(states, 2, :)], title="Robot position over time", xlabel="t [s]",  ylabel="[m]", label=["x" "y"], linewidth=2)
+	#plot(timepoints, view(states, 4, :) * radius, title="Robot velocity over time", xlabel="t [s]", ylabel="[m/s]", label="v_robot", linewidth=2)
+	#plot(timepoints, [view(states, 1, :), view(states, 2, :)], title="Robot position over time", xlabel="t [s]",  ylabel="[m]", label=["x" "y"], linewidth=2)
 	gui()
 end

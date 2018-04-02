@@ -1,5 +1,5 @@
 using Base.Test
-include("../src/VelocityControlledDifferentialDrive.jl")
+include("../model/VelocityControlledDifferentialDrive.jl")
 
 let state = initial_state(0, 0, 0)
     # directly controlling velocity
