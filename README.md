@@ -4,7 +4,7 @@ This project is for designing the control of a differential drive robot.
 
 ### Update strategies
 
-The kinematic model alternates between updating the orientation and the position. The velocity drive model uses the halfway orientation for updating the position.
+The kinematic model alternates between updating the orientation and the position. The `VelocityControlledDifferentialDrive` model uses the halfway orientation for updating the position.
 
 Comparison of different update strategies while having a `0.1 sec` update cycle with `1 rad/sec` difference between the left angular velocity and the right angular velocity and `6.5 rad/sec` angular velocity of the right wheel:
 
