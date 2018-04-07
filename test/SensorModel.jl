@@ -18,8 +18,8 @@ let robot_pose = initial_state(0, 0, π/2) # B
 
     sensed_position = detect_marker(robot_pose, marker_position)
 
-    @test sensed_position[1] ≈ 1.5 atol = ε
-    @test sensed_position[2] ≈ 0 atol = ε
+    @test sensed_position[1] ≈ 1.5 atol=ε
+    @test sensed_position[2] ≈ 0 atol=ε
 end
 
 let robot_pose = initial_state(-1, 0, 0)
