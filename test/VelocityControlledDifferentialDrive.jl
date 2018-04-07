@@ -1,5 +1,5 @@
-using Base.Test
 include("../model/VelocityControlledDifferentialDrive.jl")
+using Base.Test
 
 let state = initial_state(1, 0, π/2)
 	cycle_time = 0.1
