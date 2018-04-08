@@ -17,7 +17,16 @@ function new_state(state, control, elapsed_time)
     return [x_new y_new θ_new]
 end
 
-dθ(ω_left, ω_right) = r/L * (ω_right - ω_left)
+# derivative of the x component of the state.
 dx(θ, ω_left, ω_right) = r/2.0 * (ω_left + ω_right) * cos(θ)
+
+# derivative of the y component of the state.
 dy(θ, ω_left, ω_right) = r/2.0 * (ω_left + ω_right) * sin(θ)
+
+# derivative of the orientation component of the state.
+dθ(ω_left, ω_right) = r/L * (ω_right - ω_left)
+
+# creates a new state given with the specified x, y and orientation
+# components. the components should be in identical coordinate systems,
+# e.g. world.
 initial_state(x_world, y_world, θ_world) = [x_world y_world θ_world]
