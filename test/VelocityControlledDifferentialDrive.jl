@@ -11,11 +11,11 @@ let state = initial_state(1, 0, π/2)
 	ε_orientation = 0.01
 	control = [angular_velocity angular_velocity]
 
-	new_state = state_update(state, control, cycle_time)
+	state = new_state(state, control, cycle_time)
 
-	@test new_state[1] ≈ expected_position_x atol = ε_position
-	@test new_state[2] ≈ expected_position_y atol = ε_position
-	@test new_state[3] ≈ expected_orientation atol = ε_orientation
+	@test state[1] ≈ expected_position_x atol = ε_position
+	@test state[2] ≈ expected_position_y atol = ε_position
+	@test state[3] ≈ expected_orientation atol = ε_orientation
 end
 
 let state = initial_state(1, 0, π/2)
@@ -28,14 +28,14 @@ let state = initial_state(1, 0, π/2)
 	ε_orientation = 0.01
 	control = [angular_velocity angular_velocity]
 
-	new_state = state_update(state, control, cycle_time)
+	state = new_state(state, control, cycle_time)
 
 	println()
 	println("Constant linear move results")
-	println(new_state)
-	@test new_state[1] ≈ expected_position_x atol = ε_position
-	@test new_state[2] ≈ expected_position_y atol = ε_position
-	@test new_state[3] ≈ expected_orientation atol = ε_orientation
+	println(state)
+	@test state[1] ≈ expected_position_x atol = ε_position
+	@test state[2] ≈ expected_position_y atol = ε_position
+	@test state[3] ≈ expected_orientation atol = ε_orientation
 	println("Constant linear move pass")
 end
 
@@ -50,16 +50,16 @@ let state = initial_state(1, 0, π/2)
 	ε_orientation = 0.01
 	control = [angular_velocity_left angular_velocity_right]
 
-	new_state = state_update(state, control, cycle_time)
+	state = new_state(state, control, cycle_time)
 
 	println()
 	println("Constant circular move long cycle results")
 	println("Expected:   ", [expected_position_x expected_position_y expected_orientation])
-	println("Calculated: ", new_state)
-	println("Error[mm]:  ", sqrt((expected_position_x - new_state[1])^2 + (expected_position_y - new_state[2])^2) * 1000)
-	@test new_state[1] ≈ expected_position_x atol = ε_position
-	@test new_state[2] ≈ expected_position_y atol = ε_position
-	@test new_state[3] ≈ expected_orientation atol = ε_orientation
+	println("Calculated: ", state)
+	println("Error[mm]:  ", sqrt((expected_position_x - state[1])^2 + (expected_position_y - state[2])^2) * 1000)
+	@test state[1] ≈ expected_position_x atol = ε_position
+	@test state[2] ≈ expected_position_y atol = ε_position
+	@test state[3] ≈ expected_orientation atol = ε_orientation
 	println("Constant circular move long cycle pass")
 end
 
@@ -74,16 +74,16 @@ let state = initial_state(1, 0, π/2)
 	ε_orientation = 0.01
 	control = [angular_velocity_left angular_velocity_right]
 
-	new_state = state_update(state, control, cycle_time)
+	state = new_state(state, control, cycle_time)
 
 	println()
 	println("Constant circular move long cycle results")
 	println("Expected:   ", [expected_position_x expected_position_y expected_orientation])
-	println("Calculated: ", new_state)
-	println("Error[mm]:  ", sqrt((expected_position_x - new_state[1])^2 + (expected_position_y - new_state[2])^2) * 1000)
-	@test new_state[1] ≈ expected_position_x atol = ε_position
-	@test new_state[2] ≈ expected_position_y atol = ε_position
-	@test new_state[3] ≈ expected_orientation atol = ε_orientation
+	println("Calculated: ", state)
+	println("Error[mm]:  ", sqrt((expected_position_x - state[1])^2 + (expected_position_y - state[2])^2) * 1000)
+	@test state[1] ≈ expected_position_x atol = ε_position
+	@test state[2] ≈ expected_position_y atol = ε_position
+	@test state[3] ≈ expected_orientation atol = ε_orientation
 	println("Constant circular move long cycle high curvature pass")
 end
 
@@ -99,7 +99,7 @@ let state = initial_state(1, 0, π/2)
 	control = [angular_velocity_left angular_velocity_right]
 
 	for i in 1:15
-		state = state_update(state, control, cycle_time)
+		state = new_state(state, control, cycle_time)
 	end
 
 	println()
@@ -124,16 +124,16 @@ let state = initial_state(1, 0, π/2)
 	ε_orientation = 0.01
 	control = [angular_velocity_left angular_velocity_right]
 
-	new_state = state_update(state, control, cycle_time)
+	state = new_state(state, control, cycle_time)
 
 	println()
 	println("Constant circular move short cycle results")
 	println("Expected:   ", [expected_position_x expected_position_y expected_orientation])
-	println("Calculated: ", new_state)
-	println("Error[mm]:  ", sqrt((expected_position_x - new_state[1])^2 + (expected_position_y - new_state[2])^2) * 1000)
-	@test new_state[1] ≈ expected_position_x atol = ε_position
-	@test new_state[2] ≈ expected_position_y atol = ε_position
-	@test new_state[3] ≈ expected_orientation atol = ε_orientation
+	println("Calculated: ", state)
+	println("Error[mm]:  ", sqrt((expected_position_x - state[1])^2 + (expected_position_y - state[2])^2) * 1000)
+	@test state[1] ≈ expected_position_x atol = ε_position
+	@test state[2] ≈ expected_position_y atol = ε_position
+	@test state[3] ≈ expected_orientation atol = ε_orientation
 	println("Constant circular move short cycle pass")
 end
 
@@ -149,7 +149,7 @@ let state = initial_state(1, 0, π/2)
 	control = [angular_velocity_left angular_velocity_right]
 
 	for i in 1:30
-		state = state_update(state, control, cycle_time)
+		state = new_state(state, control, cycle_time)
 	end
 
 	println()

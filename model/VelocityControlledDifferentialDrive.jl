@@ -1,30 +1,23 @@
 L = 0.13    # m : distance between the wheels
 r = 0.033   # m : wheel radius
 
-function initial_state(x_world, y_world, theta_world)
-    return [x_world y_world theta_world]
+# creates a new state based upon the previous one assuming that the
+# specified control that was executed for the specified time.
+# we will assume that the control was applied at the beginning of
+# the time slot and it took effect immediately
+function new_state(state, control, elapsed_time)
+    x, y, θ = state
+    ω_left, ω_right = control
+
+    θ_midway = θ + 0.5 * elapsed_time * dθ(ω_left, ω_right)
+    x_new = x + elapsed_time * dx(θ_midway, ω_left, ω_right)
+    y_new = y + elapsed_time * dy(θ_midway, ω_left, ω_right)
+    θ_new = θ + elapsed_time * dθ(ω_left, ω_right)
+
+    return [x_new y_new θ_new]
 end
 
-# updates the state by the specified control that was executed for
-# the specified time. we will assume that the control was
-# applied at the beginning of the time slot and
-# it took effect immediately
-function state_update(state, control, elapsed_time)
-    x, y, theta = state
-    dtheta = orientation_derivative(control)
-    new_position = [x y] + elapsed_time * position_derivatives(theta + elapsed_time / 2 * dtheta, control)
-    new_theta = theta + elapsed_time * dtheta
-    return [new_position[1] new_position[2] new_theta]
-end
-
-function orientation_derivative(control)
-    v_left_wheel, v_right_wheel = control
-    return r/L * (v_right_wheel - v_left_wheel)
-end
-
-function position_derivatives(theta, control)
-    v_left_wheel, v_right_wheel = control
-    dx = r/2.0 * (v_left_wheel + v_right_wheel) * cos(theta)
-    dy = r/2.0 * (v_left_wheel + v_right_wheel) * sin(theta)
-    return [dx dy]
-end
+dθ(ω_left, ω_right) = r/L * (ω_right - ω_left)
+dx(θ, ω_left, ω_right) = r/2.0 * (ω_left + ω_right) * cos(θ)
+dy(θ, ω_left, ω_right) = r/2.0 * (ω_left + ω_right) * sin(θ)
+initial_state(x_world, y_world, θ_world) = [x_world y_world θ_world]
