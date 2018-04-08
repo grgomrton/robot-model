@@ -81,3 +81,23 @@ let robot_pose = initial_state(2, 1, π/2 + π/4)
     @test sensed_position[1] ≈ 0 atol=ε
     @test sensed_position[2] ≈ 1.414214 atol=ε
 end
+
+let robot_pose = initial_state(-1, 1, π)
+    marker_position = [1.5 1]
+    ε = 0.001
+
+    sensed_position = detect_marker(robot_pose, marker_position)
+
+    @test sensed_position[1] ≈ 0 atol=ε
+    @test sensed_position[2] ≈ -2.5 atol=ε
+end
+
+let robot_pose = initial_state(-1, 1, -π)
+    marker_position = [1.5 1]
+    ε = 0.001
+
+    sensed_position = detect_marker(robot_pose, marker_position)
+
+    @test sensed_position[1] ≈ 0 atol=ε
+    @test sensed_position[2] ≈ -2.5 atol=ε
+end
