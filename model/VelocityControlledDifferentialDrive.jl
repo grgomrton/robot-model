@@ -1,32 +1,47 @@
+# This is an exact model of a velocity controlled differential drive
+# under the following assumptions:
+# - the control was applied at the beginning of the time slot
+# - the control took effect immediately
+# - the wheels don't slip
+
 L = 0.13    # m : distance between the wheels
 r = 0.033   # m : wheel radius
 
-# creates a new state based upon the previous one assuming that the
+# Creates a new state based upon the previous one assuming that the
 # specified control that was executed for the specified time.
-# we will assume that the control was applied at the beginning of
-# the time slot and it took effect immediately
 function new_state(state, control, elapsed_time)
     x, y, θ = state
     ω_left, ω_right = control
 
-    θ_midway = θ + 0.5 * elapsed_time * dθ(ω_left, ω_right)
-    x_new = x + elapsed_time * dx(θ_midway, ω_left, ω_right)
-    y_new = y + elapsed_time * dy(θ_midway, ω_left, ω_right)
-    θ_new = θ + elapsed_time * dθ(ω_left, ω_right)
+    x⁺ = x + Δx(ω_left, ω_right, θ, elapsed_time)
+    y⁺ = y + Δy(ω_left, ω_right, θ, elapsed_time)
+    θ⁺ = θ + Δθ(ω_left, ω_right, elapsed_time)
 
-    return [x_new y_new θ_new]
+    return [x⁺ y⁺ θ⁺]
 end
 
-# derivative of the x component of the state.
-dx(θ, ω_left, ω_right) = r/2.0 * (ω_left + ω_right) * cos(θ)
+# Change in the x position after the elapsed time.
+function Δx(ω_left, ω_right, θ_init, elapsed_time)
+    if ω_left != ω_right
+        L/2.0 * (ω_left + ω_right)/(ω_right - ω_left) * (sin(θ_init + r/L * (ω_right - ω_left) * elapsed_time) - sin(θ_init))
+    else
+        r/2.0 * (ω_left + ω_right) * cos(θ_init) * elapsed_time
+    end
+end
 
-# derivative of the y component of the state.
-dy(θ, ω_left, ω_right) = r/2.0 * (ω_left + ω_right) * sin(θ)
+# Change in the y position after the elapsed time.
+function Δy(ω_left, ω_right, θ_init, elapsed_time)
+    if ω_left != ω_right
+        L/2.0 * (ω_left + ω_right)/(ω_right - ω_left) * (cos(θ_init) - cos(θ_init + r/L * (ω_right - ω_left) * elapsed_time))
+    else
+        r/2.0 * (ω_left + ω_right) * sin(θ_init) * elapsed_time
+    end
+end
 
-# derivative of the orientation component of the state.
-dθ(ω_left, ω_right) = r/L * (ω_right - ω_left)
+# Change in the orientation after the elapsed time.
+Δθ(ω_left, ω_right, elapsed_time) = elapsed_time * r/L * (ω_right - ω_left)
 
-# creates a new state given with the specified x, y and orientation
-# components. the components should be in identical coordinate systems,
+# Creates a new state given with the specified x, y and orientation
+# components. The components should be in identical coordinate systems,
 # e.g. world.
 initial_state(x_world, y_world, θ_world) = [x_world y_world θ_world]
