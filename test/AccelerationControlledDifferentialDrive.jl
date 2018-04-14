@@ -9,7 +9,7 @@ let state = initial_state(0, 0, 0, 0, 0)
     (al, ar) = control
     r = 0.033
     L = 0.13
-    ε_integration = 0.00001
+    ε_integration = 0.000001
     expected_position_x = x0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * cos(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
     expected_position_y = y0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * sin(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
     expected_orientation = theta0 + r/L*(wr0-wl0)*elapsed_time + r/L*(ar-al)*elapsed_time^2/2
@@ -36,7 +36,7 @@ let state = initial_state(1, 1.5, π/2, 5, 5)
     (al, ar) = control
     r = 0.033
     L = 0.13
-    ε_integration = 0.00001
+    ε_integration = 0.000001
     expected_position_x = x0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * cos(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
     expected_position_y = y0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * sin(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
     expected_orientation = theta0 + r/L*(wr0-wl0)*elapsed_time + r/L*(ar-al)*elapsed_time^2/2
@@ -64,7 +64,7 @@ let (x0, y0, theta0, wl0, wr0) = initial_state(0, 0, 0, 0, 0)
     expected_x = 0.66
     expected_y = 0
     expected_theta = 0
-    ε_integration = 0.00001
+    ε_integration = 0.000001
     ε_position = 0.001
 	ε_orientation = 0.01
 

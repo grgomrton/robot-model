@@ -16,9 +16,9 @@ function new_state(state, control, elapsed_time)
     x, y, θ, ω_left, ω_right = state
     α_left, α_right = control
 
-    ω_left⁺ = ω_left + Δω(ω_left, α_left, elapsed_time)
-    ω_right⁺ = ω_right + Δω(ω_right, α_right, elapsed_time)
-    θ⁺ = θ + Δθ(θ, ω_left, α_left, ω_right, α_right, elapsed_time)
+    ω_left⁺ = ω_left + Δω(α_left, elapsed_time)
+    ω_right⁺ = ω_right + Δω(α_right, elapsed_time)
+    θ⁺ = θ + Δθ(ω_left, α_left, ω_right, α_right, elapsed_time)
     x⁺ = x + Δx(θ, ω_left, α_left, ω_right, α_right, elapsed_time)
     y⁺ = y + Δy(θ, ω_left, α_left, ω_right, α_right, elapsed_time)
 
@@ -28,22 +28,22 @@ end
 # Change in the x position assuming constant angular velocities.
 # Units: θ : rad; ω : rad/s; α : rad/s²; t : s
 function Δx(θ_init, ω_left_init, α_left, ω_right_init, α_right, elapsed_time)
-    return hquadrature(t -> r/2 * (ω_left_init + α_left*t + ω_right_init + α_right*t) * cos(θ_init + r/L*(ω_right_init-ω_left_init)*t + r/L*(α_right-α_left)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1] # TODO cubature doesn't seem to care about abstol
+    return hquadrature(t -> r/2 * (ω_left_init + Δω(α_left, t) + ω_right_init + Δω(α_right, t)) * cos(θ_init + Δθ(ω_left_init, α_left, ω_right_init, α_right, t)), 0, elapsed_time; abstol=ε_integration)[1] # TODO cubature doesn't seem to care about abstol
 end
 
 # Change in the y position assuming constant angular velocities.
 # Units: θ : rad; ω : rad/s; α : rad/s²; t : s
 function Δy(θ_init, ω_left_init, α_left, ω_right_init, α_right, elapsed_time)
-    return hquadrature(t -> r/2 * (ω_left_init + α_left*t + ω_right_init + α_right*t) * sin(θ_init + r/L*(ω_right_init-ω_left_init)*t + r/L*(α_right-α_left)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
+    return hquadrature(t -> r/2 * (ω_left_init + Δω(α_left, t) + ω_right_init + Δω(α_right, t)) * sin(θ_init + Δθ(ω_left_init, α_left, ω_right_init, α_right, t)), 0, elapsed_time; abstol=ε_integration)[1]
 end
 
 # Change in the orientation after the specified time.
-# Units: θ : rad; ω : rad/s; α : rad/s²; t : s
-Δθ(θ_init, ω_left_init, α_left, ω_right_init, α_right, elapsed_time) = r/L * (ω_right_init - ω_left_init) * elapsed_time + r/L * (α_right - α_left) * elapsed_time^2 / 2.0
+# Units: ω : rad/s; α : rad/s²; t : s
+Δθ(ω_left_init, α_left, ω_right_init, α_right, elapsed_time) = r/L * (ω_right_init - ω_left_init) * elapsed_time + r/L * (α_right - α_left) * elapsed_time^2 / 2.0
 
 # Change in the angular velocity over time.
-# Units: ω : rad/s; α : rad/s²; t : s
-Δω(ω_init, α, elapsed_time) = ω_init + α * elapsed_time
+# Units: α : rad/s²; t : s
+Δω(α, elapsed_time) = α * elapsed_time
 
 # Creates a new state given with the specified x, y and orientation
 # components and the left and right wheel angular velocities.
