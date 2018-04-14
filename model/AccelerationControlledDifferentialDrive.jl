@@ -2,8 +2,6 @@
 # The angular velocity and the orientation is updated using their closed form
 # expression, the position change along x and y axes are updated
 # using numerical integration with a configurable absolute precision.
-# Note: currently the tolerance parametrization does not to work.
-
 using Cubature
 
 L = 0.13    # m : distance between the wheels
@@ -30,7 +28,7 @@ end
 # Change in the x position assuming constant angular velocities.
 # Units: θ : rad; ω : rad/s; α : rad/s²; t : s
 function Δx(θ_init, ω_left_init, α_left, ω_right_init, α_right, elapsed_time)
-    return hquadrature(t -> r/2 * (ω_left_init + α_left*t + ω_right_init + α_right*t) * cos(θ_init + r/L*(ω_right_init-ω_left_init)*t + r/L*(α_right-α_left)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
+    return hquadrature(t -> r/2 * (ω_left_init + α_left*t + ω_right_init + α_right*t) * cos(θ_init + r/L*(ω_right_init-ω_left_init)*t + r/L*(α_right-α_left)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1] # TODO cubature doesn't seem to care about abstol
 end
 
 # Change in the y position assuming constant angular velocities.
