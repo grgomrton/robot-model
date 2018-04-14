@@ -13,14 +13,14 @@ function new_state(state, control, elapsed_time)
     x, y, θ = state
     ω_left, ω_right = control
 
+    θ⁺ = θ + Δθ(ω_left, ω_right, elapsed_time)
     x⁺ = x + Δx(ω_left, ω_right, θ, elapsed_time)
     y⁺ = y + Δy(ω_left, ω_right, θ, elapsed_time)
-    θ⁺ = θ + Δθ(ω_left, ω_right, elapsed_time)
 
     return [x⁺ y⁺ θ⁺]
 end
 
-# Change in the x position after the elapsed time.
+# Change in the x position assuming constant angular velocities.
 function Δx(ω_left, ω_right, θ_init, elapsed_time)
     if ω_left != ω_right
         L/2.0 * (ω_left + ω_right)/(ω_right - ω_left) * (sin(θ_init + r/L * (ω_right - ω_left) * elapsed_time) - sin(θ_init))
@@ -29,7 +29,7 @@ function Δx(ω_left, ω_right, θ_init, elapsed_time)
     end
 end
 
-# Change in the y position after the elapsed time.
+# Change in the y position assuming constant angular velocities.
 function Δy(ω_left, ω_right, θ_init, elapsed_time)
     if ω_left != ω_right
         L/2.0 * (ω_left + ω_right)/(ω_right - ω_left) * (cos(θ_init) - cos(θ_init + r/L * (ω_right - ω_left) * elapsed_time))
