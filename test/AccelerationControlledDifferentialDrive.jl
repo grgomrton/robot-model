@@ -103,12 +103,12 @@ let (x0, y0, theta0, wl0, wr0) = initial_state(0, 0, 0, 0, 0)
     calculated_y = y0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * sin(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
 
     println()
-    println("cubature test suit test constant acceleration linear move result")
+    println("Cubature test suit test constant acceleration linear move result")
     println("Calculated: ", [calculated_x calculated_y calculated_theta])
 	println("Expected:   ", [expected_x expected_y expected_theta])
 	println("Error[mm]:  ", sqrt((expected_x - calculated_x)^2 + (expected_y - calculated_y)^2) * 1000)
     @test calculated_x ≈ expected_x atol = ε_position
 	@test calculated_y ≈ expected_y atol = ε_position
 	@test calculated_theta ≈ expected_theta atol = ε_orientation
-    println("cubature test suit test constant acceleration linear move pass")
+    println("Cubature test suit test constant acceleration linear move pass")
 end

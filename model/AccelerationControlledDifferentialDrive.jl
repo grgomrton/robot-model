@@ -18,8 +18,8 @@ function new_state(state, control, elapsed_time)
     ω_left⁺ = ω_left + Δω(α_left, elapsed_time)
     ω_right⁺ = ω_right + Δω(α_right, elapsed_time)
     θ⁺ = θ + Δθ(ω_left, α_left, ω_right, α_right, elapsed_time)
-    x⁺ = x + approximateΔx(θ, (ω_left + ω_left⁺)/2, (ω_right+ω_right⁺)/2, elapsed_time)
-    y⁺ = y + approximateΔy(θ, (ω_left + ω_left⁺)/2, (ω_right+ω_right⁺)/2, elapsed_time)
+    x⁺ = x + approximateΔx(θ, (ω_left + ω_left⁺)/2, (ω_right + ω_right⁺)/2, elapsed_time)
+    y⁺ = y + approximateΔy(θ, (ω_left + ω_left⁺)/2, (ω_right + ω_right⁺)/2, elapsed_time)
 
     return [x⁺ y⁺ θ⁺ ω_left⁺ ω_right⁺]
 end
