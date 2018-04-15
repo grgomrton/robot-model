@@ -1,0 +1,13 @@
+rough rotation count without load
+
+pwm 100 - 9.5 / 2 sec
+pwm 90 - 9 / 2 sec
+pwm 80 - 9 / 2 sec
+pwm 70 - 8 / 2 sec
+pwm 60 - 8 / 2 sec
+pwm 50 - 7 / 2 sec
+pwm 40 - 7 / 2 sec
+pwm 30 - 5.5 / 2 sec
+pwm 20 - 4 / 2 sec
+pwm 10 - 0.5 / 2 sec
+pwm 0  - 0 / 2 sec

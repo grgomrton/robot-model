@@ -15,9 +15,9 @@ pinLeftMotorBackwards = 9
 pinRightMotorBackwards = 7
 
 # The frequency of the PWM signal
-Frequency = 20
-# 30% of the time pwm signaling time will be the pin on
-NormalSpeed = 30
+Frequency = 200
+# 30% of the  time pwm signaling time will be the pin on
+NormalSpeed = 50
 # Setting the duty cycle to 0 means the motors will not turn
 Stop = 0
 
@@ -40,11 +40,11 @@ setPwmRightMotorForwards.start(Stop)
 setPwmRightMotorBackwards.start(Stop)
 
 # Turn both motors forwards with 30 percent duty cycle
-setPwmLeftMotorForwards.ChangeDutyCycle(NormalSpeed)
+#setPwmLeftMotorForwards.ChangeDutyCycle(NormalSpeed)
 setPwmRightMotorForwards.ChangeDutyCycle(NormalSpeed)
 
 # Wait a little
-time.sleep(1)
+time.sleep(2)
 
 # Stop every motor
 setPwmLeftMotorForwards.ChangeDutyCycle(Stop)
