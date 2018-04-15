@@ -10,7 +10,7 @@ let state = initial_state(0, 0, 0, 0, 0)
     r = 0.033
     L = 0.13
     ε_integration = 0.000001
-    expected_position_x = x0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * cos(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
+    expected_position_x = x0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * cos(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1] # TODO cubature doesn't seem to care about abstol
     expected_position_y = y0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * sin(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
     expected_orientation = theta0 + r/L*(wr0-wl0)*elapsed_time + r/L*(ar-al)*elapsed_time^2/2
     ε_position = 0.001
@@ -30,7 +30,7 @@ let state = initial_state(0, 0, 0, 0, 0)
 end
 
 let state = initial_state(1, 1.5, π/2, 5, 5)
-    control = [-10, 0]
+    control = [-5, 0]
     elapsed_time = 0.1
     (x0, y0, theta0, wl0, wr0) = state
     (al, ar) = control
@@ -54,6 +54,36 @@ let state = initial_state(1, 1.5, π/2, 5, 5)
 	@test state[2] ≈ expected_position_y atol=ε_position
 	@test state[3] ≈ expected_orientation atol=ε_orientation
     println("Turn left from constant linear move pass")
+end
+
+let state = initial_state(1, 1.5, π/2, 5, 5)
+    control = [-5, 0]
+    elapsed_time = 1.0
+    cycle_time = 0.1
+    (x0, y0, theta0, wl0, wr0) = state
+    (al, ar) = control
+    r = 0.033
+    L = 0.13
+    ε_integration = 0.000001
+    expected_position_x = x0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * cos(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
+    expected_position_y = y0 + hquadrature(t -> r/2 * (wl0 + al*t + wr0 + ar*t) * sin(theta0 + r/L*(wr0-wl0)*t + r/L*(ar-al)*t^2/2), 0, elapsed_time; abstol=ε_integration)[1]
+    expected_orientation = theta0 + r/L*(wr0-wl0)*elapsed_time + r/L*(ar-al)*elapsed_time^2/2
+    ε_position = 0.001
+	ε_orientation = 0.01
+
+    for i in 1:10
+        state = new_state(state, control, cycle_time)
+    end
+
+    println()
+	println("Turn left from constant linear move multiple update results")
+    println("State:      ", state)
+	println("Expected:   ", [expected_position_x expected_position_y expected_orientation])
+	println("Error[mm]:  ", sqrt((expected_position_x - state[1])^2 + (expected_position_y - state[2])^2) * 1000)
+	@test state[1] ≈ expected_position_x atol=ε_position
+	@test state[2] ≈ expected_position_y atol=ε_position
+	@test state[3] ≈ expected_orientation atol=ε_orientation
+    println("Turn left from constant linear move multiple update pass")
 end
 
 let (x0, y0, theta0, wl0, wr0) = initial_state(0, 0, 0, 0, 0)

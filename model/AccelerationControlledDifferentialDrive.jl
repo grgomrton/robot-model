@@ -1,12 +1,11 @@
 # This is an approximate model of an acceleration controlled differential drive.
-# The angular velocity and the orientation is updated using their closed form
-# expression, the position change along x and y axes are updated
-# using numerical integration with a configurable absolute precision.
-using Cubature
+# The angular velocities and the orientation are updated using their closed form
+# expression, the position along x and y axes are updated with the midway constant
+# angular velocities. The error in this heuristic increases with time and
+# with higher curvature.
 
 L = 0.13    # m : distance between the wheels
 r = 0.033   # m : wheel radius
-ε_integration = 0.0001     # m : the maximum error with which the position components are estimated in one update
 
 # Creates a new state based upon the previous one assuming that the
 # specified control that was executed continuously from the beginning
@@ -19,22 +18,30 @@ function new_state(state, control, elapsed_time)
     ω_left⁺ = ω_left + Δω(α_left, elapsed_time)
     ω_right⁺ = ω_right + Δω(α_right, elapsed_time)
     θ⁺ = θ + Δθ(ω_left, α_left, ω_right, α_right, elapsed_time)
-    x⁺ = x + Δx(θ, ω_left, α_left, ω_right, α_right, elapsed_time)
-    y⁺ = y + Δy(θ, ω_left, α_left, ω_right, α_right, elapsed_time)
+    x⁺ = x + approximateΔx(θ, (ω_left + ω_left⁺)/2, (ω_right+ω_right⁺)/2, elapsed_time)
+    y⁺ = y + approximateΔy(θ, (ω_left + ω_left⁺)/2, (ω_right+ω_right⁺)/2, elapsed_time)
 
     return [x⁺ y⁺ θ⁺ ω_left⁺ ω_right⁺]
 end
 
 # Change in the x position assuming constant angular velocities.
-# Units: θ : rad; ω : rad/s; α : rad/s²; t : s
-function Δx(θ_init, ω_left_init, α_left, ω_right_init, α_right, elapsed_time)
-    return hquadrature(t -> r/2 * (ω_left_init + Δω(α_left, t) + ω_right_init + Δω(α_right, t)) * cos(θ_init + Δθ(ω_left_init, α_left, ω_right_init, α_right, t)), 0, elapsed_time; abstol=ε_integration)[1] # TODO cubature doesn't seem to care about abstol
+# Units: θ : rad; ω : rad/s; t : s
+function approximateΔx(θ_init, ω_left, ω_right, elapsed_time)
+    if ω_left != ω_right
+        L/2.0 * (ω_left + ω_right)/(ω_right - ω_left) * (sin(θ_init + r/L * (ω_right - ω_left) * elapsed_time) - sin(θ_init))
+    else
+        r/2.0 * (ω_left + ω_right) * cos(θ_init) * elapsed_time
+    end
 end
 
 # Change in the y position assuming constant angular velocities.
-# Units: θ : rad; ω : rad/s; α : rad/s²; t : s
-function Δy(θ_init, ω_left_init, α_left, ω_right_init, α_right, elapsed_time)
-    return hquadrature(t -> r/2 * (ω_left_init + Δω(α_left, t) + ω_right_init + Δω(α_right, t)) * sin(θ_init + Δθ(ω_left_init, α_left, ω_right_init, α_right, t)), 0, elapsed_time; abstol=ε_integration)[1]
+# Units: θ : rad; ω : rad/s; t : s
+function approximateΔy(θ_init, ω_left, ω_right, elapsed_time)
+    if ω_left != ω_right
+        L/2.0 * (ω_left + ω_right)/(ω_right - ω_left) * (cos(θ_init) - cos(θ_init + r/L * (ω_right - ω_left) * elapsed_time))
+    else
+        r/2.0 * (ω_left + ω_right) * sin(θ_init) * elapsed_time
+    end
 end
 
 # Change in the orientation after the specified time.
